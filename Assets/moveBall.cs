@@ -23,7 +23,7 @@ public class moveBall : MonoBehaviour {
 	void Start () {
         
        
-        Invoke("StartBall", 5);
+        Invoke("StartBall", 3);
 	}
 
 
@@ -52,14 +52,13 @@ public class moveBall : MonoBehaviour {
     void StartBall()
     {
         GetComponent<Rigidbody>().velocity = Vector3.right * ballSpeed;
-
-
+       
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         Transform hit = this.transform;
-
+        float rand = Random.Range(-0.3f, 0.3f);
 
 
         if (collision.collider.CompareTag("Enemy"))
@@ -70,7 +69,9 @@ public class moveBall : MonoBehaviour {
 
             float z = hitPoint(transform.position, collision.transform.position, collision.collider.bounds.size.z);
 
-            Vector3 dir = new Vector3(-1, 0, z).normalized;
+            Vector3 dir = new Vector3(-1, 0, z + rand).normalized;
+
+          //  ballSpeed += 0.3f;
 
             GetComponent<Rigidbody>().velocity = dir * ballSpeed;
         }
@@ -80,19 +81,17 @@ public class moveBall : MonoBehaviour {
 
             Effect(hit.position, Vector3.up);
 
+           // ballSpeed += 0.3f;
+
             float z = hitPoint(transform.position, collision.transform.position, collision.collider.bounds.size.z);
 
-            Vector3 dir = new Vector3(1, 0, z).normalized;
+            Vector3 dir = new Vector3(1, 0, z + rand).normalized;
 
             GetComponent<Rigidbody>().velocity = dir * ballSpeed;
         }
         if(collision.collider.CompareTag("Top"))
         {
-            //float x = hitPoint(transform.position, collision.transform.position, collision.collider.bounds.size.z);
-
-            
-
-            Vector3 dir = new Vector3(GetComponent<Rigidbody>().velocity.x, 0, 1).normalized;
+            Vector3 dir = new Vector3(GetComponent<Rigidbody>().velocity.x, 0, 2f).normalized;
 
             GetComponent<Rigidbody>().velocity = dir * ballSpeed;
         }
@@ -102,10 +101,11 @@ public class moveBall : MonoBehaviour {
 
             
 
-            Vector3 dir = new Vector3(GetComponent<Rigidbody>().velocity.x, 0, -1).normalized;
+            Vector3 dir = new Vector3(GetComponent<Rigidbody>().velocity.x, 0, -2f).normalized;
 
             GetComponent<Rigidbody>().velocity = dir * ballSpeed;
         }
+        
     }
 
     private void OnTriggerEnter(Collider other)
@@ -115,17 +115,19 @@ public class moveBall : MonoBehaviour {
         {
             CameraShaker.Instance.ShakeOnce(6f, 6f, .1f, 1f);
             GetComponent<Rigidbody>().velocity = Vector3.zero;
+            
             transform.position = new Vector3(0, 0, 0);
             //ExplodeEffect(this.transform.position, Vector3.RotateTowards(hit.position, transform.position, 0, 0));
-            Invoke("StartBall", 3);
+            Invoke("StartBall", 1);
         }
         if (other.CompareTag("EnemyScore"))
         {
             CameraShaker.Instance.ShakeOnce(6f, 6f, .1f, 1f);
             GetComponent<Rigidbody>().velocity = Vector3.zero;
+            
             //ExplodeEffect(this.transform.position, Vector3.RotateTowards(hit.position, transform.position, 0, 0));
             transform.position = new Vector3(0, 0, 0);
-            Invoke("StartBall", 3);
+            Invoke("StartBall", 1);
         }
     }
 
